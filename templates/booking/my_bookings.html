@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}My Bookings - Classroom Booking{% endblock %}
+
+{% block content %}
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">My Bookings</h1>
+        <p class="mt-1 text-sm text-gray-500">View and manage all your room bookings.</p>
+    </div>
+
+    <div class="mb-8">
+        <a href="{% url 'booking:room_list' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+            Make New Booking
+        </a>
+    </div>
+
+    {% if bookings %}
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">All Bookings</h3>
+                <p class="mt-1 text-sm text-gray-500">{{ bookings|length }} total booking{{ bookings|length|pluralize }}</p>
+            </div>
+            <div class="divide-y divide-gray-200">
+                {% for booking in bookings %}
+                <div class="px-6 py-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center">
+                                <h4 class="text-lg font-medium text-gray-900">{{ booking.room.room_number }} - {{ booking.room.name }}</h4>
+                                <span class="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if booking.status == 'confirmed' %}bg-green-100 text-green-800{% elif booking.status == 'cancelled' %}bg-red-100 text-red-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+                                    {{ booking.get_status_display }}
+                                </span>
+                            </div>
+                            <div class="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-gray-600">
+                                <div>{{ booking.date|date:"M j, Y" }}</div>
+                                <div>{{ booking.start_time|time:"g:i A" }} ({{ booking.duration_hours }}h)</div>
+                                <div>{{ booking.expected_attendees }} attendee{{ booking.expected_attendees|pluralize }}</div>
+                            </div>
+                            {% if booking.purpose %}
+                                <div class="mt-2">
+                                    <span class="text-sm text-gray-700">{{ booking.purpose }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="flex-shrink-0">
+                            {% if booking.status != 'cancelled' and booking.date >= today %}
+                                <form method="POST" action="{% url 'booking:cancel_booking' booking.id %}" onsubmit="return confirm('Are you sure you want to cancel this booking?')" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="inline-flex items-center px-3 py-2 border border-red-300 text-sm leading-4 font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100">
+                                        Cancel
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="text-center py-12">
+            <h3 class="mt-4 text-lg font-medium text-gray-900">No bookings yet</h3>
+            <p class="mt-2 text-gray-500">You haven't made any room bookings.</p>
+            <div class="mt-6">
+                <a href="{% url 'booking:room_list' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                    Browse Rooms
+                </a>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

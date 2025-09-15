@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Browse Rooms - Classroom Booking{% endblock %}
+
+{% block content %}
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Browse Available Rooms</h1>
+        <p class="mt-1 text-sm text-gray-500">Select a date to view available rooms and book your preferred time slot.</p>
+    </div>
+
+    <div class="bg-white shadow rounded-lg mb-8">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Select Date</h3>
+        </div>
+        <div class="p-6">
+            <form method="GET" class="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
+                <div class="flex-1 max-w-sm">
+                    <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Booking Date</label>
+                    <input type="date" name="date" id="date" value="{{ selected_date|date:'Y-m-d' }}" min="{{ today|date:'Y-m-d' }}" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+                    Check Availability
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {% if rooms %}
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+            {% for room in rooms %}
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <div class="px-6 py-4 bg-gradient-to-r from-blue-500 to-blue-600">
+                    <h3 class="text-lg font-semibold text-white">{{ room.room_number }}</h3>
+                    <p class="text-blue-100">{{ room.name }}</p>
+                </div>
+                <div class="px-6 py-4">
+                    <div class="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-4">
+                        <div class="flex items-center">
+                            <span>{{ room.min_capacity }}-{{ room.max_capacity }} people</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span>{{ room.available_from|time:"g:i A" }}-{{ room.available_until|time:"g:i A" }}</span>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <h4 class="text-sm font-medium text-gray-900 mb-2">Features</h4>
+                        <div class="flex flex-wrap gap-2" style="opacity: 1 !important; visibility: visible !important; display: flex !important;">
+                            {% if room.has_projector %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800" style="opacity: 1 !important; visibility: visible !important; display: inline-flex !important;">📽️ Projector</span>
+                            {% endif %}
+                            {% if room.has_whiteboard %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800" style="opacity: 1 !important; visibility: visible !important; display: inline-flex !important;">📝 Whiteboard</span>
+                            {% endif %}
+                            {% if room.has_computer %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800" style="opacity: 1 !important; visibility: visible !important; display: inline-flex !important;">💻 Computer</span>
+                            {% endif %}
+                            {% if room.has_air_conditioning %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800" style="opacity: 1 !important; visibility: visible !important; display: inline-flex !important;">❄️ A/C</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="px-6 pb-4">
+                    <a href="{% url 'booking:room_book' room.id %}?date={{ selected_date|date:'Y-m-d' }}" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                        Book Now
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-12">
+            <h3 class="mt-4 text-lg font-medium text-gray-900">No rooms available</h3>
+            <p class="mt-2 text-gray-500">There are no rooms available for the selected date.</p>
+        </div>
+    {% endif %}
+{% endblock %}
