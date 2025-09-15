@@ -1,7 +1,11 @@
 ### AREFANDY WAEOUSENG
 ### 6610625037 
 
-# https://youtu.be/sxtjnc-Hc28
+# 📹 Demo Video
+https://youtu.be/sxtjnc-Hc28
+
+# 🌐 Live Application
+**Cloud App URL**: [Coming Soon - Will be added after Render deployment]
 
 # 🏢 Advanced Django Classroom Booking System
 
@@ -158,12 +162,12 @@ A comprehensive classroom booking system built with **Django Framework** and **T
 - **Environment Variables**: `.env` file support
 - **Database**: PostgreSQL/TimescaleDB support
 
-### Deployment Steps
-1. Set environment variables
-2. Run `python manage.py migrate`
-3. Run `python manage.py collectstatic`
-4. Configure web server (nginx, Apache)
-5. Use gunicorn/uwsgi for WSGI
+### Deployment Steps (Render)
+1. Push code to GitHub deploy branch
+2. Create PostgreSQL database on Render
+3. Create Web Service on Render
+4. Set environment variables (DATABASE_URL, DJANGO_SECRET_KEY)
+5. Deploy automatically with build.sh script
 
 ## 📊 User Workflow
 

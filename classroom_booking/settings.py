@@ -2,6 +2,7 @@ import os
 import sys
 from pathlib import Path
 from decouple import config as env  # avoid clashing with your config.py
+import dj_database_url
 
 # Import custom configuration module safely
 sys.path.append(str(Path(__file__).resolve().parent.parent))
@@ -18,9 +19,9 @@ get_database_config = getattr(app_config, 'get_database_config', lambda: {'datab
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = env('SECRET_KEY', default='django-insecure-#x$x9qj_d_p4%1o16&t0-(==t%=z3muz($+=p1nzn##lpfhna=')
-DEBUG = env('DEBUG', default=SECURITY_CONFIG.get('debug_mode', True), cast=bool)
-ALLOWED_HOSTS = SECURITY_CONFIG.get('allowed_hosts', ['localhost', '127.0.0.1', '*'])
+SECRET_KEY = env('DJANGO_SECRET_KEY', default='django-insecure-#x$x9qj_d_p4%1o16&t0-(==t%=z3muz($+=p1nzn##lpfhna=')
+DEBUG = env('DEBUG', default='False', cast=bool)
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -68,34 +69,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'classroom_booking.wsgi.application'
 
-# Database Configuration based on config.py
-if DATABASE_BACKEND == 'sqlite' or env('USE_SQLITE', default=True, cast=bool):
-    # Development with SQLite
-    sqlite_config = get_database_config() if 'get_database_config' in globals() else {'database_path': 'db.sqlite3'}
+# Database Configuration for Render deployment
+if env('DATABASE_URL', default='') and not DEBUG:
+    # Production with PostgreSQL on Render
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / sqlite_config.get('database_path', 'db.sqlite3'),
-        }
-    }
-elif DATABASE_BACKEND in ['postgresql', 'timescaledb']:
-    # Production with PostgreSQL/TimescaleDB
-    pg_config = get_database_config() if 'get_database_config' in globals() else {}
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': env('DB_NAME', default=pg_config.get('database_name', 'classroom_booking')),
-            'USER': env('DB_USER', default=pg_config.get('username', 'postgres')),
-            'PASSWORD': env('DB_PASSWORD', default=pg_config.get('password', '')),
-            'HOST': env('DB_HOST', default=pg_config.get('host', 'localhost')),
-            'PORT': env('DB_PORT', default=str(pg_config.get('port', '5432'))),
-            'OPTIONS': {
-                'connect_timeout': pg_config.get('connection_timeout', 60),
-            }
-        }
+        'default': dj_database_url.parse(env('DATABASE_URL'))
     }
 else:
-    # Fallback to SQLite
+    # Development with SQLite
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
