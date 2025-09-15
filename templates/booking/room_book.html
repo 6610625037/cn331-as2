@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book {{ room.name }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; }
+        h1 { color: #333; }
+        .room-info { background: #e8f4fd; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .form-group { margin: 15px 0; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { background: #007cba; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        .back-link { color: #007cba; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/booking/rooms/" class="back-link">← Back to Rooms</a>
+        
+        <h1>📅 Book Room: {{ room.name }}</h1>
+        
+        <div class="room-info">
+            <h3>Room Details</h3>
+            <p><strong>Code:</strong> {{ room.room_number }}</p>
+            <p><strong>Building:</strong> {{ room.building }}</p>
+            <p><strong>Floor:</strong> {{ room.floor }}</p>
+            <p><strong>Capacity:</strong> {{ room.min_capacity }} - {{ room.max_capacity }} people</p>
+            <p><strong>Date:</strong> {{ selected_date|date:"F j, Y" }}</p>
+        </div>
+
+        {% if booked_slots %}
+        <div style="background: #fff5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <h3>⚠️ Unavailable Times</h3>
+            {% for booking in booked_slots %}
+            <p>{{ booking.start_time|time:"g:i A" }} - {{ booking.end_time|time:"g:i A" }} ({{ booking.purpose }})</p>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="background: #f0fff4; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <h3>✅ All Times Available!</h3>
+            <p>No existing bookings for {{ selected_date|date:"F j, Y" }}. Book any time!</p>
+        </div>
+        {% endif %}
+
+        <h3>📝 Make Booking</h3>
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label>⏰ Start Time *</label>
+                <select name="start_time" required>
+                    <option value="">Select time...</option>
+                    <option value="09:00">9:00 AM</option>
+                    <option value="10:00">10:00 AM</option>
+                    <option value="11:00">11:00 AM</option>
+                    <option value="12:00">12:00 PM</option>
+                    <option value="13:00">1:00 PM</option>
+                    <option value="14:00">2:00 PM</option>
+                    <option value="15:00">3:00 PM</option>
+                    <option value="16:00">4:00 PM</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>⏱️ Duration *</label>
+                <select name="duration_hours" required>
+                    <option value="1">1 hour</option>
+                    <option value="2">2 hours</option>
+                    <option value="3">3 hours</option>
+                    <option value="4">4 hours</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>📋 Purpose *</label>
+                <input type="text" name="purpose" required placeholder="e.g. Team Meeting">
+            </div>
+            
+            <div class="form-group">
+                <label>👥 Expected Attendees *</label>
+                <input type="number" name="expected_attendees" required 
+                       min="{{ room.min_capacity }}" max="{{ room.max_capacity }}" value="{{ room.min_capacity }}">
+                <small>{{ room.min_capacity }}-{{ room.max_capacity }} people</small>
+            </div>
+            
+            <div class="form-group">
+                <label>📝 Special Requirements</label>
+                <textarea name="special_requirements" rows="3" placeholder="Optional"></textarea>
+            </div>
+            
+            <button type="submit">🎯 Book This Room</button>
+        </form>
+    </div>
+</body>
+</html>
