@@ -5,7 +5,7 @@
 https://youtu.be/sxtjnc-Hc28
 
 # 🌐 Live Application
-**Cloud App URL**: [Coming Soon - Will be added after Render deployment]
+**Cloud App URL**: https://cn331-as3.onrender.com
 
 # 🏢 Advanced Django Classroom Booking System
 
