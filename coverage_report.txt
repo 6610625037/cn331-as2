@@ -1,0 +1,20 @@
+Name                                                Stmts   Miss  Cover
+-----------------------------------------------------------------------
+accounts\__init__.py                                    0      0   100%
+accounts\forms.py                                      44      0   100%
+accounts\models.py                                     45      5    89%
+accounts\urls.py                                        4      0   100%
+accounts\views.py                                      52      0   100%
+booking\__init__.py                                     0      0   100%
+booking\management\__init__.py                          0      0   100%
+booking\management\commands\__init__.py                 0      0   100%
+booking\management\commands\create_sample_data.py      44     44     0%
+booking\models.py                                     156     12    92%
+booking\urls.py                                         4      0   100%
+booking\views.py                                       84      9    89%
+classroom_booking\__init__.py                           0      0   100%
+classroom_booking\middleware.py                        14     14     0%
+classroom_booking\settings.py                          53      4    92%
+classroom_booking\urls.py                              13      5    62%
+-----------------------------------------------------------------------
+TOTAL                                                 513     93    82%

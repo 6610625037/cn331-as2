@@ -238,6 +238,129 @@ classroom-booking-system/
 - **Tailwind CSS**: https://tailwindcss.com/docs
 - **TimescaleDB**: https://docs.timescale.com/
 
+## 🧪 Testing (Assignment #4 - Testing Branch)
+
+This branch includes comprehensive unit tests and automated testing via GitHub Actions.
+
+### Test Coverage
+
+The test suite includes:
+
+#### **Booking App Tests** (`booking/tests.py`)
+1. **Room Model Tests** (8 tests)
+   - Room creation and validation
+   - String representation
+   - Unique code constraint
+   - Availability checking (open/closed rooms)
+   - Time-based availability
+   - Overlapping booking detection
+   - Available slots generation
+
+2. **Booking Model Tests** (11 tests)
+   - Booking creation and validation
+   - End time calculation
+   - Duration validation (min/max)
+   - Capacity validation
+   - Time range validation
+   - Overlapping conflict detection
+   - Non-overlapping bookings
+   - Cancelled booking handling
+
+3. **Booking Views Tests** (15 tests)
+   - Room list view accessibility
+   - Room filtering (open/closed)
+   - Date filtering
+   - Past date handling
+   - Room booking flow (GET/POST)
+   - Successful booking creation
+   - Invalid booking rejection
+   - My bookings view
+   - Booking cancellation
+   - Dashboard view
+
+#### **Accounts App Tests** (`accounts/tests.py`)
+1. **CustomUser Model Tests** (8 tests)
+   - User creation (regular/admin/superuser)
+   - User type validation
+   - Admin permission checking
+   - Unique username constraint
+   - Phone number field
+
+2. **UserProfile Model Tests** (3 tests)
+   - Profile creation
+   - One-to-one relationship
+   - String representation
+
+3. **Authentication Views Tests** (14 tests)
+   - Login view (GET/POST)
+   - Valid/invalid credentials
+   - Logout functionality
+   - Registration view (GET/POST)
+   - Password mismatch handling
+   - Duplicate username prevention
+   - Profile view and updates
+   - Dashboard redirects (user/admin)
+
+### Running Tests Locally
+
+1. **Install test dependencies**:
+   ```bash
+   pip install coverage
+   ```
+
+2. **Run all tests**:
+   ```bash
+   python manage.py test
+   ```
+
+3. **Run specific app tests**:
+   ```bash
+   python manage.py test booking
+   python manage.py test accounts
+   ```
+
+4. **Run with coverage report**:
+   ```bash
+   coverage run --source='.' manage.py test
+   coverage report
+   coverage html
+   ```
+
+5. **View coverage report**:
+   - Open `htmlcov/index.html` in your browser
+
+### GitHub Actions Workflow
+
+The testing branch includes automated CI/CD workflow (`.github/workflows/django-tests.yml`):
+
+- **Triggers**: Automatically runs on push to `testing` branch
+- **Python Versions**: Tests on Python 3.11 and 3.12
+- **Test Steps**:
+  1. Checkout code
+  2. Set up Python environment
+  3. Install dependencies
+  4. Run migrations
+  5. Execute test suite
+  6. Generate coverage report
+  7. Upload coverage artifacts
+
+### Test Results
+
+**Total Tests**: 59 tests covering:
+- ✅ Models (Room, Booking, CustomUser, UserProfile)
+- ✅ Views (Authentication, Booking, Dashboard)
+- ✅ Forms (Login, Registration, Profile Update)
+- ✅ Validation (Business logic, Permissions, Edge cases)
+
+**Good Path Tests**: Valid user flows, successful operations
+**Bad Path Tests**: Error handling, validation failures, edge cases
+
+### Viewing Test Results
+
+1. **Local Testing**: Run `python manage.py test` to see results in terminal
+2. **GitHub Actions**: Check Actions tab in repository for workflow results
+3. **Coverage Report**: Download coverage artifacts from GitHub Actions runs
+
 ---
 
 **🎉 Your Django Classroom Booking System is ready for production use!**

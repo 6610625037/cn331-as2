@@ -11,17 +11,17 @@ def test_view(request):
     print("DEBUG: test_view called")
     return HttpResponse("Test view working! This is a basic HTTP response.")
 
-# @login_required  # Temporarily disabled for debugging
+@login_required
 def dashboard_view(request):
     """Dashboard showing overview of bookings and rooms"""
     today = date.today()
-    
+
     # Get user's upcoming bookings
     user_bookings = Booking.objects.filter(
         user=request.user,
         date__gte=today,
         status__in=['confirmed', 'pending']
-    ).select_related('room')[:5]
+    ).select_related('room')[:5] if request.user.is_authenticated else []
     
     # Get available rooms today
     available_rooms = Room.objects.filter(status='open')[:6]
@@ -42,7 +42,7 @@ def dashboard_view(request):
     
     return render(request, 'booking/dashboard.html', context)
 
-# @login_required  # Temporarily disabled for debugging
+@login_required
 def room_list_view(request):
     """List all available rooms with date filter"""
     selected_date = request.GET.get('date', str(date.today()))
@@ -71,7 +71,7 @@ def room_list_view(request):
     
     return render(request, 'booking/room_list.html', context)
 
-# @login_required  # Temporarily disabled for debugging
+@login_required
 def room_book_view(request, room_id):
     """Book a specific room"""
     print(f"DEBUG: room_book_view called with room_id={room_id}")
@@ -148,7 +148,7 @@ def room_book_view(request, room_id):
     # FIXED: Use template instead of hardcoded HTML
     return render(request, "booking/room_book.html", context)
 
-# @login_required  # Temporarily disabled for debugging
+@login_required
 def my_bookings_view(request):
     """Show user's bookings"""
     bookings = Booking.objects.filter(user=request.user).select_related('room').order_by('-date', '-start_time')
@@ -160,7 +160,7 @@ def my_bookings_view(request):
     
     return render(request, 'booking/my_bookings.html', context)
 
-# @login_required  # Temporarily disabled for debugging
+@login_required
 def cancel_booking_view(request, booking_id):
     """Cancel a booking"""
     booking = get_object_or_404(Booking, id=booking_id, user=request.user)
